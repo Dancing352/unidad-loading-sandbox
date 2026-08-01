@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNIDAD FH - Cargando</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --accent: #3b82f6;
+    --accent-dim: #1d4ed8;
+    --panel-bg: rgba(8, 8, 12, 0.82);
+    --panel-border: rgba(255,255,255,0.07);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255,255,255,0.65);
+    --text-dim: rgba(255,255,255,0.35);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Exo 2', sans-serif;
+    background: #000;
+    color: var(--text-primary);
+  }
+
+  /* ── FONDO ── */
+  #bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.55) saturate(0.85);
+    transform: scale(1.04);
+    animation: bgDrift 18s ease-in-out infinite alternate;
+    z-index: 0;
+  }
+  
+  @keyframes bgDrift {
+    from { transform: scale(1.04) translate(0,0); }
+    to   { transform: scale(1.08) translate(-1%,-0.5%); }
+  }
+
+  /* ── PANEL IZQUIERDO ── */
+  #left-panel {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 340px;
+    background: var(--panel-bg);
+    border-right: 1px solid var(--panel-border);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    display: flex;
+    flex-direction: column;
+    padding: 36px 32px 28px;
+    z-index: 10;
+  }
+
+  /* Logo */
+  .logo-wrap {
+    display: flex; justify-content: center;
+    margin-bottom: 24px;
+    animation: fadeDown 0.7s ease both;
+  }
+  .logo-wrap img {
+    width: 130px; height: 130px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(59,130,246,0.25));
+  }
+  /* Fallback SVG si no hay imagen */
+  .logo-svg {
+    width: 110px; height: 110px;
+    filter: drop-shadow(0 0 16px rgba(255,255,255,0.18));
+  }
+
+  /* Server name */
+  .server-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+    margin-bottom: 18px;
+    animation: fadeDown 0.7s 0.15s ease both;
+  }
+
+  /* Descripción */
+  .desc-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    animation: fadeDown 0.7s 0.2s ease both;
+  }
+  .desc-text {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    animation: fadeDown 0.7s 0.25s ease both;
+  }
+
+  /* Spacer */
+  .spacer { flex: 1; }
+
+  /* Barra de progreso */
+  .progress-section {
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .addon-name {
+    font-size: 12px;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .progress-pct {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .progress-track {
+    width: 100%;
+    height: 5px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .progress-status {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+
+  /* Consejo */
+  .tip-section {
+    margin-top: 22px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    animation: fadeUp 0.7s 0.35s ease both;
+  }
+  .tip-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 7px;
+  }
+  .tip-text {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 18px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    animation: fadeUp 0.7s 0.4s ease both;
+  }
+
+  /* ── MÚSICA (esquina superior derecha) ── */
+  #music-widget {
+    position: fixed;
+    top: 20px; right: 20px;
+    background: rgba(8,8,14,0.78);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 12px;
+    padding: 12px 16px 12px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 20;
+    min-width: 230px;
+    max-width: 280px;
+    animation: fadeLeft 0.7s 0.5s ease both;
+  }
+  .music-art {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    background: rgba(59,130,246,0.2);
+    border: 1px solid rgba(59,130,246,0.3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .music-art img { width: 100%; height: 100%; object-fit: cover; }
+  .music-art svg { width: 22px; height: 22px; opacity: 0.7; }
+  .music-info { min-width: 0; }
+  .music-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.5px;
+  }
+  .music-from {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .music-album {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .music-equalizer {
+    display: flex; align-items: flex-end; gap: 2px;
+    height: 16px; margin-top: 4px;
+  }
+  .music-equalizer span {
+    display: block;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: eq 0.8s ease-in-out infinite alternate;
+  }
+  .music-equalizer span:nth-child(1) { animation-delay: 0s; }
+  .music-equalizer span:nth-child(2) { animation-delay: 0.15s; }
+  .music-equalizer span:nth-child(3) { animation-delay: 0.3s; }
+  .music-equalizer span:nth-child(4) { animation-delay: 0.1s; }
+  @keyframes eq {
+    from { height: 3px; }
+    to   { height: 14px; }
+  }
+
+  /* Animaciones entrada */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translateX(16px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- FONDO: el archivo debe llamarse "background.jpg" y estar en la misma carpeta -->
+<img id="bg" src="background.jpg" alt="67">
+
+<!-- PANEL IZQUIERDO -->
+<div id="left-panel">
+  <!-- LOGO: el archivo debe llamarse "unidad.png" y estar en la misma carpeta que este HTML -->
+  <div class="logo-wrap">
+    <img src="unidad.png" alt="Logo Unidad">
+  </div>
+
+  <div class="server-name">Unidad FH</div>
+  <div class="divider"></div>
+
+  <div class="desc-label">Descripción de Unidad</div>
+  <div class="desc-text">
+    Unidad FH es un Servidor de Fazber Hunt, Pensado para aquellos cansados del Sandbox,TTT,RP Y que quieren una experiencia nueva,Comunidad Gamer en ascenso,pasate por el discord y disfruta la estadia.
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- BARRA DE PROGRESO -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <div class="addon-name" id="addon-name">Iniciando...</div>
+      <div class="progress-pct" id="progress-pct">0%</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-status" id="progress-status">Conectando al servidor...</div>
+  </div>
+
+  <!-- CONSEJO -->
+  <div class="tip-section">
+    <div class="tip-label">💡 Consejo</div>
+    <div class="tip-text" id="tip-text">
+      Si hay alguien acosándote o molestándote recuerda que existe TAB para seleccionar y mutear al usuario. Si la situación escala podés acudir al Staff, ellos tomarán el caso.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">UNIDAD Desde el 01/05/2026</div>
+</div>
+
+<!-- WIDGET MÚSICA (esquina superior derecha) -->
+<div id="music-widget">
+  <div class="music-art">
+    <!-- Si tenés portada: <img src="album.jpg" alt=""> -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+      <path d="M9 18V5l12-2v13"/>
+      <circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+    </svg>
+  </div>
+  <div class="music-info">
+    <div class="music-title" id="music-title">Fnaf 1 [instrumental]</div>
+    <div class="music-from" id="music-from">The Living Tombstone</div>
+    <div class="music-album" id="music-album"></div>
+    <div class="music-equalizer">
+      <span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+
+<!-- MÚSICA: el archivo debe llamarse "music.mp3" y estar en la misma carpeta -->
+<!-- GMod carga la loading screen en un CEF browser, usamos JS puro para el audio -->
+
+<script>
+// ════════════════════════════════════════
+//  INTEGRACIÓN CON GARRY'S MOD
+//  Estas funciones son llamadas automáticamente por GMod
+// ════════════════════════════════════════
+
+// ── FONDOS ROTATIVOS ──
+// Agregá o quitá nombres de archivo según los fondos que tengas
+var fondos = [
+  'background1.jpg',
+  'background2.jpg',
+  'background3.jpg',
+  'background4.jpg',
+  'background5.jpg',
+];
+var fondoIndex = 0;
+var bgEl = document.getElementById('bg');
+bgEl.style.transition = 'opacity 0.8s ease';
+
+function rotateFondo() {
+  bgEl.style.opacity = 0;
+  setTimeout(function() {
+    fondoIndex = (fondoIndex + 1) % fondos.length;
+    bgEl.src = fondos[fondoIndex];
+    bgEl.style.opacity = 1;
+  }, 800);
+}
+setInterval(rotateFondo, 8000); // ← cambia cada 8 segundos
+
+// ── MÚSICA ──
+var bgMusic = new Audio('music.mp3');
+bgMusic.loop = true;
+bgMusic.volume = 0.01;
+var musicStarted = false;
+
+function startMusic(vol) {
+  if (musicStarted) return;
+  musicStarted = true;
+  if (typeof vol !== 'undefined' && vol > 1) {
+    bgMusic.volume = Math.min(vol, 0.1);
+  }
+  bgMusic.play().catch(function() {});
+}
+
+// ── CONSEJOS (estilo chat, como Zukma) ──
+var tips = [
+  { user: 'Unidad', msg: 'Si alguien te molesta, usá TAB para mutearlo. Si escala, contactá al Staff.' },
+  { user: 'Unidad', msg: 'Podés usar !motd en el chat para volver a ver las reglas en caso de alguna duda.' },
+  { user: 'Unidad', msg: 'Respetá las reglas,y no trates de ser superior al staff.' },
+  { user: 'Unidad', msg: '¿Problemas técnicos? Podes Abrir un Ticket En el discord y el staff atendera tu problema.' },
+  { user: 'Unidad', msg: 'Unidad fue fundado el 01/05/2026.' },
+  { user: 'Unidad', msg: 'Si tenes Alguna sugerencia para el Servidor podes subirla en el canal de Worshop en el discord.' },
+  { user: 'Unidad', msg: 'Si vez a alguien causando Problemas Podes abrir un ticket en el discord.' },
+];
+var tipIndex = 0;
+var tipEl = document.getElementById('tip-text');
+tipEl.style.transition = 'opacity 0.4s';
+
+function rotateTip() {
+  tipEl.style.opacity = 0;
+  setTimeout(function() {
+    var t = tips[tipIndex % tips.length];
+    tipEl.innerHTML = '<span style="color:#3b82f6;font-weight:600;">' + t.user + ':</span> ' + t.msg;
+    tipEl.style.opacity = 1;
+    tipIndex++;
+  }, 400);
+}
+rotateTip();
+setInterval(rotateTip, 6000);
+
+// ══════════════════════════════════════════════════
+//  FUNCIONES OFICIALES DE GMOD
+// ══════════════════════════════════════════════════
+var _filesTotal = 0;
+
+window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode, volume, language) {
+  // Arranca la música con el volumen del jugador
+  startMusic(volume);
+};
+
+window.SetFilesTotal = function(total) {
+  _filesTotal = total;
+};
+
+window.SetFilesNeeded = function(needed) {
+  if (_filesTotal > 0) {
+    var pct = Math.round((_filesTotal - needed) / _filesTotal * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+};
+
+window.SetStatusChanged = function(status) {
+  document.getElementById('progress-status').textContent = status;
+  // Barra al 100% cuando ya está entrando al juego
+  if (status === 'Sending client info...' || status === 'Joining game...') {
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-pct').textContent = '100%';
+  }
+};
+
+window.DownloadingFile = function(fileName) {
+  // Muestra solo el nombre del archivo, no la ruta completa
+  var parts = fileName.split('/');
+  document.getElementById('addon-name').textContent = parts[parts.length - 1];
+};
+</script>
+
+</body>
+</html>
